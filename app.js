@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const Poster = require('./models/poster')
-const multer = require('multer');
 const dbURL = require('./data_base_key')
 
 mongoose.connect(dbURL, {useNewUrlParser: true, useUnifiedTopology: true})
@@ -10,8 +9,6 @@ mongoose.connect(dbURL, {useNewUrlParser: true, useUnifiedTopology: true})
     .catch((error) => console.log(error))
 
 app.use(express.json());
-
-const upload = multer({ dest: 'uploads/' });
 
 app.get('/home', async (req, res) =>{
     const page = parseInt(req.query.page) || 1;
@@ -70,9 +67,7 @@ app.get('/article/:id', (req, res) =>{
         .catch((error) => console.log(error))
 });
 
-app.put('/update/:id', upload.single('image'), (req, res) =>{
-    // req.body.image = req.file
-
+app.put('/update/:id', (req, res) =>{
     Poster.findByIdAndUpdate(req.body.id, req.body, { new: true, runValidators: true })
         .then((result) => {
             if (!result) {
